@@ -10,7 +10,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch --env-file=.env src/index.ts",
     "build": "tsc",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "deploy": "tsx --env-file=.env src/deploy-commands.ts"
   },
   "repository": {
     "type": "git",
