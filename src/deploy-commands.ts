@@ -1,17 +1,18 @@
 import { REST, Routes } from "discord.js";
-import { data as ping } from "./modules/core/ping.js";
 import { config } from "./core/config.js";
-
-const commands = [ping.toJSON()];
+import { loadModules } from "./core/loader.js";
 
 const rest = new REST().setToken(config.token);
 
 async function main() {
-  console.log(`Registering ${commands.length} command(s)...`);
+  const { commands } = await loadModules();
+  const body = [...commands.values()].map((cmd) => cmd.data.toJSON());
+
+  console.log(`Registering ${body.length} command(s)...`);
 
   await rest.put(
     Routes.applicationGuildCommands(config.clientId, config.guildId),
-    { body: commands },
+    { body },
   );
 
   console.log("Done.");

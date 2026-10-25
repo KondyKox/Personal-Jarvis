@@ -1,10 +1,15 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import { SlashCommandBuilder } from "discord.js";
+import type { Command } from "../../core/types.js";
 
-export const data = new SlashCommandBuilder()
-  .setName("ping")
-  .setDescription("Check if bot already passed away 🙏");
+export const ping: Command = {
+  data: new SlashCommandBuilder()
+    .setName("ping")
+    .setDescription("Check if bot already passed away 🙏"),
 
-export async function execute(interaction: ChatInputCommandInteraction) {
-  const ping = interaction.client.ws.ping;
-  await interaction.reply(`Still alive. Barely. Heartbeat: ${ping} ms 💀`);
-}
+  execute: async (interaction) => {
+    const heartbeat = interaction.client.ws.ping;
+    await interaction.reply(
+      `Still alive. Barely. Heartbeat: ${heartbeat} ms 💀`,
+    );
+  },
+};
