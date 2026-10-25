@@ -25,6 +25,7 @@
   "homepage": "https://github.com/KondyKox/Personal-Jarvis#readme",
   "dependencies": {
     "discord.js": "^14.27.0",
+    "dotenv": "^18.0.9",
     "pg": "^8.23.1"
   },
   "devDependencies": {
