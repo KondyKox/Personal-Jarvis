@@ -12,7 +12,8 @@
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "deploy": "tsx --env-file=.env src/deploy-commands.ts",
-    "migrate": "tsx src/scripts/migrate.ts"
+    "migrate": "tsx src/scripts/migrate.ts",
+    "test:parse": "tsx src/scripts/test-parse.ts"
   },
   "repository": {
     "type": "git",
