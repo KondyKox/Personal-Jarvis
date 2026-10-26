@@ -21,7 +21,7 @@ export type ModuleEvent = {
     once?: boolean;
     handler: (...args: ClientEvents[K]) => Promise<void>;
   };
-};
+}[keyof ClientEvents];
 
 export interface Module {
   name: string;
