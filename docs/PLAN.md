@@ -91,6 +91,7 @@ Plugin pattern for external sources: **fetch → compare with last time → noti
 | **Shrine** ✅ | Dead by Daylight Shrine of Secrets, posted weekly (see section 5) |
 | **Personality** ✅ | On @mention, reply from a curated pool of gifs and emotes |
 | **Ask / brain** ✅ | `/ask`, later natural-language actions via Claude tool use. 💡 Custom instructions and facts: `/instructions show\|set\|reset\|history`, `/remember`, `/forget`, `/memory list` (owner-only) |
+| **Verses & quotes** ✅ | Bible verses and Latin quotes with translations (see 5.5). 💡 `/verse random\|ref\|search`, `/quote [tag]`, optional daily post |
 | **Casino** ✅ | Simple, one command, built later: 💡 `/slots <bet>` with virtual coins |
 
 ---
@@ -142,7 +143,15 @@ Rules:
 - **Data is not instructions:** notes, reminders and later RSS or web content go in as clearly labeled data, so text like "ignore your rules" inside them can't hijack the bot (prompt injection).
 - Gif and emote choice stays separate: the curated pool picks the gif, the instructions only say when to use one.
 
-### 5.5 Casino
+### 5.5 Verses and Latin quotes
+- 💡 **Own the data, don't depend on an API:** download a public-domain Bible dataset once and load it into my own Postgres (fast, offline, nothing to break when a free API disappears).
+- ⚠️ **Copyright:** many modern translations are copyrighted. Use public-domain texts: Latin Vulgate, KJV (English), and for Polish Biblia Gdańska or Wujek (check the license of the exact dataset). Biblia Tysiąclecia is copyrighted.
+- 💡 **Latin quotes:** a small curated table (start with ~50–100) with Latin text, English (and optionally Polish) translation, author/source and tags. Verify attribution: lots of "Latin quotes" online are misattributed or invented.
+- 💡 **Commands:** `/verse random`, `/verse ref <book chapter:verse> [translation]`, `/verse search <word>` (Postgres full-text search), `/quote [tag]`, owner-only `/quote add`.
+- 💡 **Daily post:** optional scheduled "verse of the day" at a set Warsaw time, using the same scheduler and `feed_state` to avoid repeats.
+- AI is optional here and never the source of truth: it may explain a quote on request, but it must not invent quotes, verses or attributions.
+
+### 5.6 Casino
 - Virtual coins only. No real money, no cash-out.
 - 💡 `coin_ledger` table (balance = sum of transactions).
 - 💡 Wrap "deduct bet → spin → pay out" in one DB transaction, so spam can't double-spend.
@@ -162,6 +171,8 @@ Rules:
 | `coin_ledger` | user, amount, reason, created_at (later) |
 | `bot_instructions` | id, text, active, created_at (every edit = new version) |
 | `bot_facts` | id, fact, created_at |
+| `bible_verses` | translation, book, chapter, verse, text (full-text index) |
+| `quotes` | latin, translation_en, translation_pl (optional), author, source, tags |
 
 Migrations are plain numbered `.sql` files, so I learn real SQL.
 
@@ -203,7 +214,7 @@ When it returns it stays a separate app with its own DB, API and dashboard. Rule
 | 1 | Core | Router and module loader work, `/status` reports DB OK |
 | 2 | Reminders + notes | A reminder fires after a bot restart |
 | 3 | Moderation | A warning persists, a timeout works, the mod-log posts |
-| 4 | Personality + shrine | @mention gets a reply, shrine posts once per change |
+| 4 | Personality + shrine + verses/quotes | @mention gets a reply, shrine posts once per change, `/verse` and `/quote` work from my own DB |
 | 5 | Brain | `/ask` works, instructions and facts are editable and versioned, then one natural-language action |
 | 6 | Casino | `/slots` works with a ledger |
 | 7 | Voice | Spike answers "can the phone listen reliably?", then real voice |
@@ -283,3 +294,4 @@ Check licenses and current status of third-party tools before depending on them.
 - AI provider: Claude via the API (separate billing from chat limits), small model first, behind a swappable `ai` module. Considered OpenAI and Gemini; dropped the worry about using up chat limits.
 - Custom instructions and facts live in the DB (versioned, owner-only), layered on top of a base prompt file.
 - Planning phase first: no coding tasks until I say so.
+- Added a verses and Latin quotes module (own data in Postgres, public-domain texts only).
