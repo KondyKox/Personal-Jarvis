@@ -1,5 +1,6 @@
 import {
   ChatInputCommandInteraction,
+  Client,
   ClientEvents,
   RESTPostAPIChatInputApplicationCommandsJSONBody,
 } from "discord.js";
@@ -12,7 +13,7 @@ export interface Command {
 export interface Schedule {
   name: string;
   cron: string;
-  run: () => Promise<void>;
+  run: (client: Client) => Promise<void>;
 }
 
 export type ModuleEvent = {
