@@ -13,4 +13,5 @@ export const config = {
   token: requireEnv("DISCORD_TOKEN"),
   guildId: requireEnv("DEV_GUILD_ID"),
   ownerId: requireEnv("OWNER_ID"),
+  modLogChannelId: requireEnv("MOD_LOG_CHANNEL_ID"),
 };
